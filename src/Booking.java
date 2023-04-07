@@ -1,7 +1,11 @@
-public class Booking {
-    String name;
+import java.util.List;
 
-    public Booking(String name) {
-        this.name = name;
+public class Booking {
+    String userName;
+    List<Slot> slots;
+
+    public Booking(String userName, List<Slot> slots) {
+        this.userName = userName;
+        this.slots = slots;
     }
 }

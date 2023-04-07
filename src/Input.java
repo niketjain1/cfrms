@@ -19,9 +19,13 @@ public class Input {
                     if (parts[1].equals("BUILDING")) {
                         addBuilding(parts[2]);
                     } else if (parts[1].equals("FLOOR")) {
+                        
                         addFloor(parts[2], Integer.valueOf(parts[3]));
                     } else if (parts[1].equals("CONFROOM")) {
-                        addConferenceRoom(parts[2], Integer.valueOf(parts[3]), parts[4]);
+                        String buildingName = parts[2];
+                        int floorNumber = Integer.valueOf(parts[3]);
+                        String roomName = parts[4];
+                        system.addConferenceRoom(buildingName, floorNumber, roomName);
                     }
                     break;
                 }
@@ -31,8 +35,15 @@ public class Input {
                     int endHour = Integer.valueOf(hours[1]);
                     book(startHour, endHour, parts[2], parts[3], Integer.valueOf(parts[4]), parts[5]);
                     break;
-//                case "LIST":
-//                    break;
+               case "LIST":
+                   switch(parts[1]){
+                        case "ROOMS":
+                            listRooms();
+                            break;
+                        case "BOOKINGS":
+
+                   }
+
 //                case "CANCEL":
 //                    break;
                 default:
@@ -42,38 +53,42 @@ public class Input {
         }
     }
 
-    private void book(int startHour, int endHour, String name, String buildingName, int floorNumber, String roomName) {
+    private void book(int startHour, int endHour, String userName, String buildingName, int floorNumber, String roomName) {
         Building building = system.buildings.get(buildingName);
-        if(building != null){
-            Floor floor = building.getFloor(floorNumber);
-            if(floor != null){
-                ConferenceRoom room = floor.getConferenceRoom(roomName);
-                if(room != null){
-                        room.addBooking(startHour, endHour, name);
-                        System.out.println("Booked conference room " + roomName + " from " + startHour + " to " + endHour + " hour");
-                }else{
-                    System.out.println("Invalid conference room");
-                }
-            }else{
-                System.out.println("Invalid floor number");
-            }
-        }else{
+        if(building == null){
             System.out.println("Invalid building name");
+            return;
         }
+        Floor floor = building.getFloor(floorNumber);
+        if (floor == null) {
+            System.out.println("Invalid floor number");
+            return;
+        }
+        ConferenceRoom room = floor.getConferenceRoom(roomName);
+        if (room == null) {
+            System.out.println("Invalid conference room");
+            return;
+        }
+        room.addBooking(startHour, endHour, userName);
+        System.out.println("Booked conference room " + roomName + " from " + startHour + " to " + endHour + " hour");
     }
 
-    private void addConferenceRoom(String buildingName, int floorNumber, String roomName) {
-        system.addConferenceRoom(buildingName, floorNumber, roomName);
-        System.out.println("Added conference room " + roomName +" in the " + floorNumber + " floor of building " + buildingName );
-    }
+    // private void addConferenceRoom(String buildingName, int floorNumber, String roomName) {
+    //     system.addConferenceRoom(buildingName, floorNumber, roomName);
+    //     System.out.println("Added conference room " + roomName +" in the " + floorNumber + " floor of building " + buildingName );
+    // }
 
     private void addFloor(String buildingName, int floorNumber) {
         system.addFloor(buildingName, floorNumber);
-        System.out.println("Added floor " + floorNumber +" in the building " + buildingName);
     }
 
     private void addBuilding(String buildingName) {
         system.addBuilding(buildingName);
-        System.out.println("Added building " + buildingName +" into the system");
+    }
+
+    private void listRooms() {
+        // for each building
+        // for each floor
+        // list all rooms
     }
 }
